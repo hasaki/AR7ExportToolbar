@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using GrapeCity.ActiveReports.Document;
+using GrapeCity.ActiveReports.Export;
 
 namespace AR7ExportToolbar.ToolStripExport.Exporters
 {
@@ -40,5 +41,23 @@ namespace AR7ExportToolbar.ToolStripExport.Exporters
 		}
 
 		public abstract void Export(SectionDocument document, string filename, NameValueCollection settings);
+
+		public virtual IDocumentExportEx GetExporter()
+		{
+			var type = CreateType();
+			var exp = Activator.CreateInstance(type) as IDocumentExportEx;
+
+			return exp;
+		}
+
+		public abstract string DefaultExtension
+		{
+			get;
+		}
+
+		public abstract string FileDialogFilter
+		{
+			get;
+		}
 	}
 }

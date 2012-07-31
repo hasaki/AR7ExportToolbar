@@ -18,11 +18,6 @@ namespace AR7ExportToolbar.ToolStripExport
 		public string LocalizedName { get; set; }
 
 		/// <summary>
-		/// Gets or sets the IPageReportExporter to use to handle page reports
-		/// </summary>
-		public IPageReportExporter PageReportExport { get; set; }
-
-		/// <summary>
 		/// Gets or sets the ISectionReportExporter to handle section reports
 		/// </summary>
 		public ISectionReportExporter SectionReportExport { get; set; }

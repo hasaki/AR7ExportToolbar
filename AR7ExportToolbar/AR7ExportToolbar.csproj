@@ -59,15 +59,6 @@
     <Reference Include="GrapeCity.ActiveReports.Document.v7, Version=7.0.5274.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Export.Document.v7, Version=7.0.5274.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Export.Excel.v7, Version=7.0.5274.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Export.Html.v7, Version=7.0.5274.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Export.Image.v7, Version=7.0.5274.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Export.Pdf.v7, Version=7.0.5274.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Export.Rdf.v7, Version=7.0.5274.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Export.Word.v7, Version=7.0.5274.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
     <Reference Include="GrapeCity.ActiveReports.Extensibility.v7, Version=7.0.5274.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -99,14 +90,17 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ToolStripExport\Exporters\PageReportExporter.cs" />
+    <Compile Include="ToolStripExport\Exporters\TextSectionReportExporter.cs" />
+    <Compile Include="ToolStripExport\Exporters\RtfSectionReportExporter.cs" />
+    <Compile Include="ToolStripExport\Exporters\ExcelSectionReportExporter.cs" />
+    <Compile Include="ToolStripExport\Exporters\TiffSectionReportExporter.cs" />
+    <Compile Include="ToolStripExport\Exporters\HtmlSectionReportExporter.cs" />
     <Compile Include="ToolStripExport\Exporters\PdfSectionReportExporter.cs" />
     <Compile Include="ToolStripExport\Exporters\SectionReportExporter.cs" />
     <Compile Include="ToolStripExport\ExportItem.cs" />
     <Compile Include="ToolStripExport\ExportToolStripButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ToolStripExport\IPageReportExporter.cs" />
     <Compile Include="ToolStripExport\ISectionReportExporter.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -122,6 +116,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="PageReport1.rdlx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -151,6 +148,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="SectionReport1.resx">
+      <DependentUpon>SectionReport1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ToolStripExport\ReportViewer.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -69,7 +69,7 @@
 			this.viewer1.Sidebar.TocPanel.ContextMenu = null;
 			this.viewer1.Sidebar.TocPanel.Width = 180;
 			this.viewer1.Sidebar.Width = 180;
-			this.viewer1.Size = new System.Drawing.Size(644, 398);
+			this.viewer1.Size = new System.Drawing.Size(941, 540);
 			this.viewer1.SplitView = false;
 			this.viewer1.TabIndex = 0;
 			this.viewer1.ViewType = GrapeCity.Viewer.Common.Model.ViewType.SinglePage;
@@ -80,7 +80,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(644, 398);
+			this.ClientSize = new System.Drawing.Size(941, 540);
 			this.Controls.Add(this.viewer1);
 			this.Name = "Form1";
 			this.Text = "Form1";

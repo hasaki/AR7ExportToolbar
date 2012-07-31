@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -12,7 +13,7 @@ namespace AR7ExportToolbar.ToolStripExport
 {
 	public class ExportToolStripButton : ToolStripDropDownButton
 	{
-		private static readonly Image ToolStripButtonImage = new Bitmap(typeof(ExportToolStripButton), "ReportViewer.bmp");
+		private static readonly Bitmap ToolStripButtonImage = new Bitmap(typeof(ExportToolStripButton), "ReportViewer.bmp");
 
 		private readonly Viewer host;
 
@@ -28,22 +29,62 @@ namespace AR7ExportToolbar.ToolStripExport
 		{
 			this.host = host;
 
+			Enabled = false;
+			AttachHostEvents();
+
 			AvailableExports = new Dictionary<string, ExportItem>();
+
+			Image = ToolStripButtonImage;
+			ImageTransparentColor = ToolStripButtonImage.GetPixel(0, 0);
 
 			AddAllExports();
 
 			this.DropDownOpening += OnDropDownOpening;
 		}
 
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				DetachHostEvents();
+			}
+
+			base.Dispose(disposing);
+		}
+
+		private void AttachHostEvents()
+		{
+			host.LoadCompleted += OnHostLoadCompleted;
+		}
+
+		private void DetachHostEvents()
+		{
+			host.LoadCompleted -= OnHostLoadCompleted;
+		}
+
+		private void OnHostLoadCompleted(object sender, EventArgs e)
+		{
+			Enabled = true;
+		}
+
 		private void AddAllExports()
 		{
-			var item = new ExportItem();
-			item.Name = "PDF";
-			item.LocalizedName = "PDF";
-			item.PageReportExport = new PageReportExporter("GrapeCity.ActiveReports.Export.Pdf.Page.PdfRenderingExtension", "GrapeCity.ActiveReports.Export.Pdf.v7");
-			item.SectionReportExport = new PdfSectionReportExporter();
+			AddAvailableExport("PDF", "PDF", new PdfSectionReportExporter());
+			AddAvailableExport("HTML", "HTML", new HtmlSectionReportExporter());
+			AddAvailableExport("Excel", "Excel", new ExcelSectionReportExporter());
+			AddAvailableExport("RTF", "RTF", new RtfSectionReportExporter());
+			AddAvailableExport("Text", "Text", new TextSectionReportExporter());
+			AddAvailableExport("TIFF", "TIFF", new TiffSectionReportExporter());
+		}
 
-			AvailableExports.Add("PDF", item);
+		private void AddAvailableExport(string name, string localizedName, ISectionReportExporter exporter)
+		{
+			var item = new ExportItem();
+			item.Name = name;
+			item.LocalizedName = localizedName;
+			item.SectionReportExport = exporter;
+
+			AvailableExports.Add(item.Name, item);
 		}
 
 		private void VerifyExports()
@@ -57,11 +98,6 @@ namespace AR7ExportToolbar.ToolStripExport
 				{
 					bool available = false;
 
-					if (item.PageReportExport != null && item.PageReportExport.IsAvailable())
-					{
-						available = true;
-					}
-
 					if (item.SectionReportExport != null && item.SectionReportExport.IsAvailable())
 					{
 						available = true;
@@ -73,6 +109,8 @@ namespace AR7ExportToolbar.ToolStripExport
 					}
 				}
 			}
+
+			VerifiedAvailableExports = verifiedExports;
 		}
 
 		private void CreateDropDownItems()
@@ -84,7 +122,8 @@ namespace AR7ExportToolbar.ToolStripExport
 			foreach (var export in VerifiedAvailableExports)
 			{
 				var menuItem = new ToolStripMenuItem(export.Value.LocalizedName, ToolStripButtonImage, OnExportItemClicked);
-				
+				menuItem.Tag = export.Value;
+				menuItem.ImageTransparentColor = ToolStripButtonImage.GetPixel(0, 0);
 				dropDownItems.Add(export.Key, menuItem);
 				DropDownItems.Add(menuItem);
 			}
@@ -99,21 +138,50 @@ namespace AR7ExportToolbar.ToolStripExport
 				CreateDropDownItems();
 			}
 
-			
+			// TODO: Implement visibility toggle when support for PageDocument is exposed
+			//ToggleDropDownItemVisibility(host.Document);
 		}
-
+		/*
 		private void ToggleDropDownItemVisibility(SectionDocument doc)
 		{
-		}
+			foreach (var dropDownItemKV in dropDownItems)
+			{
+				var exportItem = VerifiedAvailableExports[dropDownItemKV.Key];
 
+				dropDownItemKV.Value.Visible = exportItem.SectionReportExport.IsAvailable();
+			}
+		}
+		*/
 		private void OnExportItemClicked(object sender, EventArgs e)
 		{
 			var item = sender as ToolStripItem;
-		}
 
-		protected override void OnDropDownOpened(EventArgs e)
-		{
-			base.OnDropDownOpened(e);
+			if (item == null)
+				return;
+
+			var exportItem = item.Tag as ExportItem;
+
+			if (exportItem == null)
+				return;
+
+			var export = exportItem.SectionReportExport;
+			if(export == null)
+				return;
+
+			var exporter = exportItem.SectionReportExport.GetExporter();
+			if (exporter == null)
+				return;
+
+			using (var saveAsDlg = new SaveFileDialog())
+			{
+				saveAsDlg.DefaultExt = export.DefaultExtension;
+				saveAsDlg.Filter = export.FileDialogFilter;
+
+				if (saveAsDlg.ShowDialog(host) != DialogResult.OK)
+					return;
+
+				host.Export(exporter, new FileInfo(saveAsDlg.FileName));
+			}
 		}
 	}
 }

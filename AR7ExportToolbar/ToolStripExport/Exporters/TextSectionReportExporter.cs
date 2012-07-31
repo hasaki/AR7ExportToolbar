@@ -8,12 +8,13 @@ using GrapeCity.ActiveReports.Export;
 
 namespace AR7ExportToolbar.ToolStripExport.Exporters
 {
-	public class PdfSectionReportExporter : SectionReportExporter
+	public class TextSectionReportExporter : SectionReportExporter
 	{
-		private const string TypeName = "GrapeCity.ActiveReports.Export.Pdf.Section.PdfExport";
-		private const string AssemblyName = "GrapeCity.ActiveReports.Export.Pdf.v7";
+		private const string TypeName = "GrapeCity.ActiveReports.Export.Xml.Section.TextExport";
+		private const string AssemblyName = "GrapeCity.ActiveReports.Export.Xml.v7";
 
-		public PdfSectionReportExporter() : base(TypeName, AssemblyName)
+		public TextSectionReportExporter()
+			: base(TypeName, AssemblyName)
 		{
 		}
 
@@ -24,12 +25,12 @@ namespace AR7ExportToolbar.ToolStripExport.Exporters
 
 		public override string DefaultExtension
 		{
-			get { return "pdf"; }
+			get { return "txt"; }
 		}
 
 		public override string FileDialogFilter
 		{
-			get { return "PDF Files (*.pdf)|*.pdf|All Files (*.*)|*.*"; }
+			get { return "Text Files (*.txt)|*.txt|All Files (*.*)|*.*"; }
 		}
 	}
 }

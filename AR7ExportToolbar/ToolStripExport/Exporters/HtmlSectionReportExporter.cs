@@ -4,16 +4,16 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using GrapeCity.ActiveReports.Document;
-using GrapeCity.ActiveReports.Export;
 
 namespace AR7ExportToolbar.ToolStripExport.Exporters
 {
-	public class PdfSectionReportExporter : SectionReportExporter
+	public class HtmlSectionReportExporter : SectionReportExporter
 	{
-		private const string TypeName = "GrapeCity.ActiveReports.Export.Pdf.Section.PdfExport";
-		private const string AssemblyName = "GrapeCity.ActiveReports.Export.Pdf.v7";
+		private const string TypeName = "GrapeCity.ActiveReports.Export.Html.Section.HtmlExport";
+		private const string AssemblyName = "GrapeCity.ActiveReports.Export.Html.v7";
 
-		public PdfSectionReportExporter() : base(TypeName, AssemblyName)
+		public HtmlSectionReportExporter()
+			: base(TypeName, AssemblyName)
 		{
 		}
 
@@ -24,12 +24,12 @@ namespace AR7ExportToolbar.ToolStripExport.Exporters
 
 		public override string DefaultExtension
 		{
-			get { return "pdf"; }
+			get { return "html"; }
 		}
 
 		public override string FileDialogFilter
 		{
-			get { return "PDF Files (*.pdf)|*.pdf|All Files (*.*)|*.*"; }
+			get { return "HTML Files (*.html)|*.html|All Files (*.*)|*.*"; }
 		}
 	}
 }
