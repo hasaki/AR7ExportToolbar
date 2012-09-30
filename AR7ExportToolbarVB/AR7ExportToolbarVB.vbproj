@@ -101,8 +101,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="ToolStripExport\Exporters\ExcelSectionReportExporter.vb" />
+    <Compile Include="ToolStripExport\Exporters\HtmlSectionReportExporter.vb" />
     <Compile Include="ToolStripExport\Exporters\PdfSectionReportExporter.vb" />
+    <Compile Include="ToolStripExport\Exporters\RtfSectionReportExporter.vb" />
     <Compile Include="ToolStripExport\Exporters\SectionReportExporter.vb" />
+    <Compile Include="ToolStripExport\Exporters\TextSectionReportExporter.vb" />
+    <Compile Include="ToolStripExport\Exporters\TiffSectionReportExporter.vb" />
     <Compile Include="ToolStripExport\ExportItem.vb" />
     <Compile Include="ToolStripExport\ExportToolStripButton.vb">
       <SubType>Component</SubType>

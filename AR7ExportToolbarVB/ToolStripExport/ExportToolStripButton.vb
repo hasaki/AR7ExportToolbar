@@ -71,6 +71,11 @@ Public Class ExportToolStripButton
 
 	Private Sub AddAllExports()
 		AddAvailableExport("PDF", "PDF", New PdfSectionReportExporter())
+		AddAvailableExport("HTML", "HTML", New HtmlSectionReportExporter())
+		AddAvailableExport("Excel", "Excel", New ExcelSectionReportExporter())
+		AddAvailableExport("RTF", "RTF", New RtfSectionReportExporter())
+		AddAvailableExport("Text", "Text", New TextSectionReportExporter())
+		AddAvailableExport("TIFF", "TIFF", New TiffSectionReportExporter())
 	End Sub
 
 	Private Sub AddAvailableExport(name As String, localizedName As String, exporter As ISectionReportExporter)
