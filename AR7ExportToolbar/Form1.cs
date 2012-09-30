@@ -17,6 +17,7 @@ namespace AR7ExportToolbar
 			InitializeComponent();
 
 			ExportToolStripButton button = new ExportToolStripButton(viewer1);
+			// button.AvailableExports.Remove("PDF");
 			viewer1.Toolbar.MainBar.Items.Insert(3, button);
 		}
 
