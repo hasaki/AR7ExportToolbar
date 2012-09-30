@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>AR7ExportToolbar by hasaki</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>AR7ExportToolbar</h1>
+        <p>A set of classes to provide an export option to the ActiveReports 7 Windows Forms Viewer control.</p>
+
+        <p class="view"><a href="https://github.com/hasaki/AR7ExportToolbar">View the Project on GitHub <small>hasaki/AR7ExportToolbar</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/hasaki/AR7ExportToolbar/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/hasaki/AR7ExportToolbar/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/hasaki/AR7ExportToolbar">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>AR7ExportToolbar</h1>
+
+<p>AR7ExportToolbar creates a toolbar button which can be hosted in the <a href="http://www.componentone.com/SuperProducts/ActiveReports/">ActiveReports 7</a> viewer control to let users export reports.</p>
+
+<p>The solution is for Visual Studio 2012, however it can be used in previous versions of Visual Studio by adding the classes to a new solution.  Both C# and VB.NET projects are provided.  To get the samples to work you need to set a property on the PageReport1.rdlx file in the project.  Set it's <code>Copy to Output Directory</code> property to <code>Copy Always</code>.</p>
+
+<p>This project was introduced in my blog post on the <a href="http://our.componentone.com/2012/08/29/activereports-7-exports-from-the-viewer/">ComponentOne Blog</a>.</p>
+
+<h2>Using the code</h2>
+
+<p>To use the button in your own code, just add the classes under the ToolStripExport folder to your project, along with making the ReportViewer.bmp an embedded resource in that folder.  Once you've done that, all you need to do is add the button to your toolbar.</p>
+
+<pre><code>// C#
+var button = new ExportToolStripButton(viewer);
+// remove exports we don't want to display
+// button.AvailableExports.Remove("PDF");
+
+// Add the toolbar button after the print button in the viewer
+viewer.Toolbar.MainBar.Items.Insert(3, button);
+
+' VB.NET
+Dim button = New ExportToolStripButton(Viewer)
+' remove exports we don't want to display
+' button.AvailableExports.Remove("PDF");
+
+' Add the toolbar button after the print button in the viewer
+Viewer.Toolbar.MainBar.Items.Insert(3, button)
+</code></pre>
+
+<h2>Customizing</h2>
+
+<p>The toolbar button allows you to remove exports from the available list, however it must be done before the button is dropped down.  There are a couple options for customizing the button:</p>
+
+<ol>
+<li>You can get in the source files and modify it yourself</li>
+<li>If all you want to do is remove an export, you can modify the AvailableExtensions dictionary to remove the exports you don't want from the drop-down.  Just do this after you create the button and all will be good.</li>
+</ol><h2>Exports Supported</h2>
+
+<p>Here is a list of the exports supported as well as the <code>Name</code> you should specify when wanting to remove the export from the <code>AvailableExports</code> dictionary.</p>
+
+<table>
+<tr>
+<td><strong>Name</strong></td>
+<td><strong>Export</strong></td>
+</tr>
+<tr>
+<td>PDF</td>
+<td>PDF Export</td>
+</tr>
+<tr>
+<td>HTML</td>
+<td>HTML Export</td>
+</tr>
+<tr>
+<td>Excel</td>
+<td>Excel Export</td>
+</tr>
+<tr>
+<td>RTF</td>
+<td>RTF Export</td>
+</tr>
+<tr>
+<td>Text</td>
+<td>Text Export</td>
+</tr>
+<tr>
+<td>TIFF</td>
+<td>TIFF Export</td>
+</tr>
+</table><h2>Structure</h2>
+
+<p>The toolbar button is provided by the <code>ExportToolStripButton</code> class.  This class uses several other classes to work, but by default it will make all exports available that it can find.</p>
+
+<p>As noted in Limitations (below), it doesn't currently list the PageReport specific rendering extensions.  This is due to a limitation in the export functionality in the viewer control that will possibly be removed in the future.  However, some pieces of the C# code have capabilities in them (commented out) to provide support for using the PageReport specific rendering extensions should we add that capability.</p>
+
+<h3>ExportToolStripButton</h3>
+
+<p>This class is the only one intended for public use.  It provides a single property to allow users to modify the available list of Exports for the viewer control.</p>
+
+<p><code>public IDictionary&lt;string,ExportItem&gt; AvailableExports { get; }</code> </p>
+
+<p>When first created, the dictionary returned by this property contains all of the exports available to the button.  Prior to the button being used for the first time, you can modify this dictionary to remove the items you don't want to make available to your users.  After the button has been dropped down, you cannot currently modify the list of available exports.</p>
+
+<h3>Internals</h3>
+
+<h4>Design</h4>
+
+<p>The design of the button is relatively simple.  It needs access to the <code>Viewer</code> control which is passed in via the constructor.  We use this to hook up to an event that tells us when the report is available as well as giving us access to the <code>Export</code> method.</p>
+
+<p>The button exposes a Dictionary which contains all of the exports, if you modify this collection before the button is used then the exports removed won't be available on the button.  </p>
+
+<p>The first time the button is used, the code will attempt to find out if the export types are available and remove any that aren't.  If you're running this on your development machine, we install all the exports in the GAC so all of them will always be available.  However, on your user's machines this may not be the case so we need to remove any that aren't present.</p>
+
+<blockquote>
+<p><strong>Note:</strong> It is recommended that you remove any exports from the <code>AvailableExports</code> dictionary that you don't want users to have, even if you don't plan on distributing the assemblies for the exports.  Someone else's application may install those exports, suddenly making them available to your application!</p>
+</blockquote>
+
+<h4>ExportItem</h4>
+
+<p>The <code>ExportItem</code> class ties the export button items to the actual implementation of an export.  Right now the Export functionality is handled by an interface (<code>ISectionReportExporter</code>) which is implemented by an abstract class (<code>SectionReportExporter</code>).  </p>
+
+<p><code>ExportItem</code> provides a <code>Name</code> and <code>LocalizedName</code> properties.  While this code doesn't do any localization, the intention is that <code>Name</code> should always refer to the English (or invariant) name of the export and is what you use when modifying the AvailableExports dictionary. <code>LocalizedName</code> is what will be displayed to users.  </p>
+
+<p>Finally, <code>ExportItem</code> provides a <code>SectionReportExport</code> property which returns the exporter for this type.  </p>
+
+<p>In the future, there may be an additional <code>PageReportExport</code> property (see Limitations below).</p>
+
+<h4>ISectionReportExporter</h4>
+
+<p>The <code>ISectionReportExporter</code> interface is the first item that will deal with the export.  It is reponsible for telling the button's code whether the export <code>IsAvailable()</code> and if so the correct <code>IDocumentExportEx</code> for it.  Lastly it provides some helpers such as the <code>DefaultExtension</code> and <code>FileDialogFilter</code>.  </p>
+
+<blockquote>
+<p><strong>Note:</strong> These are placed here rather than on the <code>ExportItem</code> because when available the <code>PageReport</code> specific-exports allow for more customization, including multiple file-types per export (the image export f.e. can export to PNG, GIF, JPG, BMP, and TIFF) so it needs a different implementation than would be suitable for the <code>SectionReport</code> specific exports.</p>
+</blockquote>
+
+<h4>SectionReportExporter</h4>
+
+<p>This abstract class implements the <code>ISectionReportExporter</code> with some generic implementation, in particular it provides the basis for finding the correct export type at runtime and abstract properties for the Save As dialog.</p>
+
+<h5>*SectionReportExporter</h5>
+
+<p>These classes pass in the type and assembly name into the SectionReportExporter and provide the proper Save As dialog property values.</p>
+
+<h2>Limitations</h2>
+
+<p>Currently the export button cannot provide exports that are specific to the Page Reports (FPL or CPL reports).  This may change in a later version, but will require a newer version of <a href="http://www.componentone.com/SuperProducts/ActiveReports/">ActiveReports 7</a> to work.  Some code exists to provide this support but it is currently commented out, and is not exposed through the public API of the ExportToolStripButton.</p>
+
+<h2>License</h2>
+
+<p>The source code contained in this project is licensed under the <a href="http://opensource.org/licenses/mit-license.php">MIT license</a>.  Any referenced libraries retain their original licenses.</p>
+
+<blockquote>
+<h3>Copyright (c) 2012, James Johnson; ComponentOne</h3>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+</blockquote>
+
+<h2>Support</h2>
+
+<p>This code is <strong>not</strong> supported by ComponentOne tech support.  When you use this code in your own project you are taking ownership of any issues involved with it and ComponentOne tech support has <strong>no</strong> obligations to it beyond what they would do if you <strong>wrote it yourself</strong>.  I wrote this in my spare time and it hasn't gone through developer code reviews or QA process except for my own testing.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/hasaki">hasaki</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
